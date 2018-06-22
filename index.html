@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <title>NYT</title>
+</head>
+<body>
+    <div class="container">
+        <h1 class="display-5">NEW YORK TIMES</h1>
+        <br>
+            <input id="query" type="text"> SEARCH
+            <br><br>
+            <input id="records" type="number"> NUMBER OF RECORDS
+            <br><br>
+            <input id="beginDate" type="number"> START DATE
+            <br><br>
+            <input id="endDate" type="number"> END DATE
+            <br><br>
+            <button id="submit" type="submit">SUBMIT</button>
+            <br><br>
+            <button id="clear" type="clear">CLEAR</button>
+    
+        <div class="displayResults"></div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script>
+
+        var query = $("#query").val();
+        var start = $("#beginDate").val();
+        var end = $("#endDate").val();
+        var records = $("#records").val();
+        var results = $(".displayResults");
+
+        $("#submit").on("click", function() {
+        
+        query = $("#query").val();
+        start = $("#beginDate").val();
+        end = $("#endDate").val();
+        records = $("#records").val();
+        
+        var url = 'https://api.nytimes.com/svc/search/v2/articlesearch.json';
+
+        url += "?" + $.param({
+            'api-key':  "4aff0dd88c3d462287ad3a77ad96c599",
+            'q' : query,
+            'begin_date' : start,
+            'end_date' : end,
+            'sortOrder' : "newest",
+            'page' : 1,
+        })
+
+        console.log(url);
+
+        $.ajax({
+            url: url,
+            method: 'get'
+        }).done(function(response) {
+            console.log(response);
+
+            var info = response.response.docs;
+            console.log(info.length);
+
+            for (var i = 0; i < info.length; i++) {
+                
+                var headline =  $("<h2 class='newsItems'>").text(info[i].headline.main); 
+                var snippet = $("<p>").text(info[i].snippet);
+                var link = $("<a>").attr('href', info[i].web_url);
+                link.text("CLICK HERE TO READ MORE");
+                
+                results.append(headline, snippet, link);  
+            }
+        }).fail(function(err) {
+            throw err;
+        });
+
+
+        });
+        $("#clear").on("click", function() {
+            $("#query").val('');
+            $("#beginDate").val('');
+            $("#endDate").val('');
+            $("#records").val('');
+            $(".displayResults").text('');
+        });
+
+
+
+
+
+ 
+
+
+    //     //var queryUrl = "http://developer.nytimes.com/article_search_v2.json" ; 
+    //     var queryKey = "";
+    //     var beginDate = "";
+    //     var endDate = "" ;
+
+    //     $(document).ready(function() {
+        
+
+    //     getParams();
+    //     });
+
+    //     function getParams() {
+    //     $("#submit").on("click", function (){
+    //         console.log("inside geParams");
+    //         queryKey = $("#query").val();
+    //         beginDate = $("#beginDate").val() ;
+    //         endDate = $("#endDate").val() ;
+    //         queryAPI();
+    //     });
+    // } 
+
+    //     function queryAPI() {
+
+    //     var baseUrl = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+    //     var apiKey = "bd1fb3ec90734d719869c36b2a75df15";
+    //     // var queryKey = "trump";
+        
+    //     // var beginDate = "1950";
+    //     // var endDate = "2018";
+    //     var sortOrder = "newest";
+    //     var page = "1";
+    //     var url  = baseUrl + "?api-key=" + apiKey + "&q=" + queryKey + "?begin_date" 
+    //             + beginDate + "?end_date=" + endDate + "?sort=" + sortOrder + "?page=" + page;
+    //     console.log(url);
+    //     var articleArray = [];
+    //     $.ajax({
+    //         url: url,
+    //         success: function(result) {
+    //             console.log(result);
+    //             var articleInfoArray = result["response"]["docs"];
+    //             articleInfoArray.forEach(function(articleInfo){
+    //                 var article = {};
+    //                 article["title"] = articleInfo["snippet"];
+    //                 article["url"] = articleInfo["web_url"];
+    //                 articleArray.push(article);
+    //             });
+    //             parseData(articleArray);
+    //         },
+    //         error: function(XMLHttpRequest, textStatus, errorThrown) {
+    //             alert("Sorry, invalid request.");
+    //             console.log("textStatus: " + textStatus + " errorThrown: " + errorThrown);
+    //             }
+    //     });
+    // }
+    
+    // function parseData(articleArray) {
+    //     var displayContainer = $(".displayResults") ;
+    //     articleArray.forEach(function(article){
+    //         var articleDiv = $("<div>");
+    //         var articleTitleP = $("<p>");
+    //         var articleUrlP = $("<p>");
+            
+    //         articleTitleP.text(article["title"]);
+    //         articleUrlP.html(article["web_url"]);
+    //         articleDiv.append(articleTitleP);
+    //         articleDiv.append(articleUrlP);
+            
+    //         displayContainer.append(articleDiv);
+    //     });
+
+
+    // }
+
+
+    </script>
+</body>
+</html>
